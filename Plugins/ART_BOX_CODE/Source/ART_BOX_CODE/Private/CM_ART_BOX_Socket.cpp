@@ -59,7 +59,7 @@ void UCM_ART_BOX_Socket::EndPlay(const EEndPlayReason::Type EndPlayReason)
  * Connects to server
  * https://answers.unrealengine.com/questions/115922/how-to-get-host-by-name.html
  */
-void UCM_ART_BOX_Socket::ConnectToServer(const FString& InIP, const int32 InPort)
+void UCM_ART_BOX_Socket::ConnectToServer(const FString& InIP, const int32 InPort, const bool ByDomain)
 {
 	//Подправь потом это убожество
 	//Незабудь
@@ -69,29 +69,33 @@ void UCM_ART_BOX_Socket::ConnectToServer(const FString& InIP, const int32 InPort
 
 	UE_LOG(LogTemp, Log, TEXT("TCP address try to connect <%s:%d>"), *InIP, InPort);
 
-	//FIPv4Address::Parse(InIP, ip);
-	
-	//bool bIsValid;
-	//RemoteAdress->SetRawIp(*InIP);
-
 	uint32 ip;
-	ANSICHAR *Domain = "vovacolt.asuscomm.com";
-	auto ResolveInfo = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetHostByName(Domain);
 
-	while (!ResolveInfo->IsComplete());
+	if (ByDomain)
+	{
+		ANSICHAR* Domain = "vovacolt.asuscomm.com";
+		auto ResolveInfo = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->GetHostByName(Domain);
 
-	ResolveInfo->GetResolvedAddress().GetIp(ip);
+		while (!ResolveInfo->IsComplete());
 
-	//RemoteAdress->SetIp(*InIP, bIsValid);
-	RemoteAdress->SetIp(ip);
-	RemoteAdress->SetPort(InPort);
+		ResolveInfo->GetResolvedAddress().GetIp(ip);
 
-	// we check the validity of the connection address
-	//if (!bIsValid)
-	//{
+		RemoteAdress->SetIp(ip);
+		RemoteAdress->SetPort(InPort);
+	}
+	else
+	{
+		bool bIsValid;
+		RemoteAdress->SetIp(*InIP, bIsValid);
+		RemoteAdress->SetPort(InPort);
+
+		// we check the validity of the connection address
+		//if (!bIsValid)
+		//{
 		//UE_LOG(LogTemp, Error, TEXT("TCP address is invalid <%s:%d>"), *InIP, InPort);
 		//return;
-	//}
+		//}
+	}
 
 	// Get the socket subsystem
 	ClientSocket = ISocketSubsystem::Get(PLATFORM_SOCKETSUBSYSTEM)->CreateSocket(NAME_Stream, ClientSocketName, false);

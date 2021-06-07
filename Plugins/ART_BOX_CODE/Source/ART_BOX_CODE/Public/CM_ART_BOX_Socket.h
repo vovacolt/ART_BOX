@@ -110,7 +110,7 @@ public:
 	 * @param InPort TCP connection port
 	 */
 	UFUNCTION(BlueprintCallable, Category = "AA")
-		void ConnectToServer(const FString& InIP = TEXT("127.0.0.1"), const int32 InPort = 3000);
+		void ConnectToServer(const FString& InIP = TEXT("127.0.0.1"), const int32 InPort = 3000, const bool ByDomain = true);
 
 	/**
 	 * Closes the connection
