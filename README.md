@@ -42,5 +42,4 @@ Tools used (Client):
 
 In the future it is planned:
 =========================
-+ Web tool for working with a database. 
 + VR version of the project.
